@@ -4,7 +4,7 @@
 1. [Introduction](#1-introduction)
 2. [Getting Started](#2-getting-started)
 3. [Database Schema](#3-database-schema)
-
+4. [API Documentation](#4-api-documentation)
 
 ---
 
@@ -48,3 +48,70 @@ To install and run Innovation Task:
 - as our Data is structured also to maintain data integrity so each record in rentalMovie table have a valid records in both customer and movie table.This ensures that each rental transaction is accurately linked to existing customer and movie data,
 <img width="700" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/c642addc-901e-4ed9-a966-177b234418b4">
 
+
+## 4. Api Documentation
+
+## CustomerController
+Manages operations related to customers.
+
+### Endpoints
+
+#### Retrieve all customers
+- **URL**: `/v1/customers`
+- **Method**: `GET`
+- **Description**: Fetches a list of all customers.
+
+#### Create a new customer
+- **URL**: `v1/customers`
+- **Method**: `POST`
+- **Description**: Creates a new customer.
+- **Request Body**:
+  ```json
+  {
+    "name": "string"
+  }
+
+#### Get All rented movies by customer
+- **URL**: `/v1/customers/{customerId}/rentals`
+- **Method**: `GET`
+- **Description**: Get all rentals for specfic Customer.
+
+
+
+## MovieController
+Manages operations related to movies.
+
+### Endpoints
+### Retrieve all movies
+- **URL**: /v1/movies
+- **Method**: GET
+- **Description**: Fetches a list of all movies.
+
+### Create a new movie
+- **URL**: /v1/movies
+- **Method**: POST
+- **Description**: Creates a new movie.
+- **Request Body**:
+```json
+ {
+  "title": "string",
+  "code": "string",
+ }
+```
+
+## MovieRentalController
+Manages operations related to movie rentals.
+
+### Endpoints
+### Rent a movie
+- **URL**: /v1/rentals
+- **Method**: POST
+- **Description**: Rents a movie.
+- **Request Body**:
+```json
+{
+  "customerId": "integer",
+  "movieId": "integer",
+  "days": "integer"
+}
+```
