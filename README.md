@@ -71,10 +71,7 @@ Manages operations related to customers.
     "name": "string"
   }
 
-#### Get All rented movies by customer
-- **URL**: `/v1/customers/{customerId}/rentals`
-- **Method**: `GET`
-- **Description**: Get all rentals for specfic Customer.
+
 
 
 
@@ -115,3 +112,7 @@ Manages operations related to movie rentals.
   "days": "integer"
 }
 ```
+#### Get All rented movies by customer
+- **URL**: `/v1/rentals/customers/{customerId}`
+- **Method**: `GET`
+- **Description**: Get all rentals for specfic Customer.
