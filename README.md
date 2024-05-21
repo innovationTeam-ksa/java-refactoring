@@ -3,6 +3,8 @@
 
 1. [Introduction](#1-introduction)
 2. [Getting Started](#2-getting-started)
+3. [Database Schema](#3-database-schema)
+
 
 ---
 
@@ -39,3 +41,10 @@ To install and run Innovation Task:
 1. Clone the repository: `[git clone https://github.com/Aabdelmajeed/InnovationTask.git)`
 2. Build the project: `mvn clean install`
 3. Run the project: `mvn spring-boot:run`
+
+
+## 3. Database Schema
+### Why choosing Relational DB?
+- as our Data is structured also to maintain data integrity so each record in rentalMovie table have a valid records in both customer and movie table.This ensures that each rental transaction is accurately linked to existing customer and movie data,
+<img width="700" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/c642addc-901e-4ed9-a966-177b234418b4">
+
