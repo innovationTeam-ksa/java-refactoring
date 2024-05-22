@@ -1,13 +1,14 @@
 package com.innovationTeam.refactoring.service;
 
 import com.innovationTeam.refactoring.entity.Customer;
-import com.innovationTeam.refactoring.model.CustomerRequestDto;
+import com.innovationTeam.refactoring.model.request.CustomerRequestDto;
+import com.innovationTeam.refactoring.model.response.CustomerResponse;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface CustomerInterface {
-    List<Customer> getAllCustomers();
+    List<CustomerResponse> getAllCustomers();
 
     Customer createCustomer(CustomerRequestDto name);
 

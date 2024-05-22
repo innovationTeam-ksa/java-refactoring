@@ -1,4 +1,4 @@
-package com.innovationTeam.refactoring.model;
+package com.innovationTeam.refactoring.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

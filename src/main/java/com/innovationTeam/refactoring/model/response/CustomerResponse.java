@@ -1,12 +1,12 @@
-package com.innovationTeam.refactoring.model;
+package com.innovationTeam.refactoring.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class CustomerRequestDto {
+@NoArgsConstructor
+public class CustomerResponse {
     private String name;
 }
