@@ -9,5 +9,6 @@ import org.mapstruct.factory.Mappers;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface CustomerMapper {
     CustomerMapper INSTANCE = Mappers.getMapper(CustomerMapper.class);
+
     Customer mapToCustomer(CustomerRequestDto customerRequestDto);
 }
