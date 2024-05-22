@@ -5,7 +5,7 @@ import com.innovationTeam.refactoring.service.MovieRentalInterface;
 
 import java.util.List;
 
-public class MovieRentalServiceImpl implements MovieRentalInterface {
+public class MovieRentalService implements MovieRentalInterface {
     @Override
     public MovieRental rentMovie(Long movieId, Long customerId, int days) {
         return null;

@@ -12,18 +12,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CustomerServiceImpl implements CustomerInterface {
+public class CustomerService implements CustomerInterface {
 
     @Autowired
     CustomerRepository customerRepository;
+
     @Override
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }
+
     @Override
     public Optional<Customer> getCustomerById(Long id) {
         return customerRepository.findById(id);
     }
+
     @Override
     public String generateCustomerStatement(Long customerId) {
         return null;
@@ -34,4 +37,6 @@ public class CustomerServiceImpl implements CustomerInterface {
         Customer customer = CustomerMapper.INSTANCE.mapToCustomer(customerRequestDto);
         return customerRepository.save(customer);
     }
+
+
 }

@@ -14,11 +14,11 @@ import java.util.List;
 @Table(name = "Customer")
 public class Customer {
     @Id
-    @Column(name ="id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name ="name")
+    @Column(name = "name")
     private String name;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

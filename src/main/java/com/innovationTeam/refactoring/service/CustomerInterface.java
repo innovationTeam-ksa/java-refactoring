@@ -6,7 +6,7 @@ import com.innovationTeam.refactoring.model.CustomerRequestDto;
 import java.util.List;
 import java.util.Optional;
 
-public interface CustomerInterface{
+public interface CustomerInterface {
     List<Customer> getAllCustomers();
 
     Customer createCustomer(CustomerRequestDto name);

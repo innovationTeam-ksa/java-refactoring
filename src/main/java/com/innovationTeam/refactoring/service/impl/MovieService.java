@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class MovieServiceImpl implements MovieInterface {
+public class MovieService implements MovieInterface {
     @Autowired
     private MovieRepository movieRepository;
 
