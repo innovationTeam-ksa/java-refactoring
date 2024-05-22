@@ -1,6 +1,5 @@
-package com.innovationTeam.refactoring.model;
+package com.innovationTeam.refactoring.model.response;
 
-import com.innovationTeam.refactoring.enums.Code;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MovieRequestDto {
+public class MovieResponse {
     private String title;
-    private Code code;
+    private String code;
 }

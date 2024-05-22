@@ -1,11 +1,12 @@
 package com.innovationTeam.refactoring.service;
 
-import com.innovationTeam.refactoring.entity.MovieRental;
+import com.innovationTeam.refactoring.model.request.MovieRentalRequestDto;
+import com.innovationTeam.refactoring.model.response.MovieRentalResponse;
 
 import java.util.List;
 
 public interface MovieRentalInterface {
-    MovieRental rentMovie(Long movieId, Long customerId, int days);
+    MovieRentalResponse rentMovie(MovieRentalRequestDto movieRentalRequestDto);
 
-    List<MovieRental> getRentalsByCustomer(Long customerId);
+    List<MovieRentalResponse> getRentalsByCustomer(Long customerId);
 }

@@ -25,5 +25,5 @@ public class MovieRental {
     private Customer customer;
 
     @Column(name = "days")
-    private int days;
+    private Long days;
 }

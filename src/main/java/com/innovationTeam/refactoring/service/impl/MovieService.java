@@ -1,6 +1,9 @@
 package com.innovationTeam.refactoring.service.impl;
 
 import com.innovationTeam.refactoring.entity.Movie;
+import com.innovationTeam.refactoring.mapper.MovieMapper;
+import com.innovationTeam.refactoring.model.request.MovieRequestDto;
+import com.innovationTeam.refactoring.model.response.MovieResponse;
 import com.innovationTeam.refactoring.repository.MovieRepository;
 import com.innovationTeam.refactoring.service.MovieInterface;
 import jakarta.transaction.Transactional;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.innovationTeam.refactoring.utils.Constants.MovieConstants.MOVIE_ID_NOT_NULL_ERROR;
 
@@ -24,7 +28,8 @@ public class MovieService implements MovieInterface {
     }
 
     @Override
-    public Movie saveMovie(Movie movie) {
+    public Movie saveMovie(MovieRequestDto movieRequest) {
+        Movie movie = MovieMapper.INSTANCE.mapToMovie(movieRequest);
         return movieRepository.save(movie);
     }
 
@@ -38,7 +43,10 @@ public class MovieService implements MovieInterface {
     }
 
     @Override
-    public List<Movie> getAllMovies() {
-        return movieRepository.findAll();
+    public List<MovieResponse> getAllMovies() {
+        List<Movie> movies = movieRepository.findAll();
+        return movies.stream()
+                .map(MovieMapper.INSTANCE::mapToMovieResponse)
+                .collect(Collectors.toList());
     }
 }

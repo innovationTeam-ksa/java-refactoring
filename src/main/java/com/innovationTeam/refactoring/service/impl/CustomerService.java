@@ -3,8 +3,9 @@ package com.innovationTeam.refactoring.service.impl;
 import com.innovationTeam.refactoring.entity.Customer;
 import com.innovationTeam.refactoring.exception.CustomerNotFoundException;
 import com.innovationTeam.refactoring.mapper.CustomerMapper;
-import com.innovationTeam.refactoring.model.CustomerRequestDto;
 import com.innovationTeam.refactoring.model.Statement;
+import com.innovationTeam.refactoring.model.request.CustomerRequestDto;
+import com.innovationTeam.refactoring.model.response.CustomerResponse;
 import com.innovationTeam.refactoring.repository.CustomerRepository;
 import com.innovationTeam.refactoring.service.CustomerInterface;
 import com.innovationTeam.refactoring.service.StatementCalculationInterface;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.innovationTeam.refactoring.utils.Constants.UserConstants.*;
 
@@ -30,9 +32,11 @@ public class CustomerService implements CustomerInterface {
     StatementPrintingInterface statementPrintingService;
 
     @Override
-    public List<Customer> getAllCustomers() {
+    public List<CustomerResponse> getAllCustomers() {
         List<Customer> customers = customerRepository.findAll();
-        return customers;
+        return customers.stream()
+                .map(CustomerMapper.INSTANCE::mapToCustomerResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
