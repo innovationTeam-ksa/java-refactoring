@@ -2,6 +2,7 @@ package com.innovationTeam.refactoring.mapper;
 
 import com.innovationTeam.refactoring.entity.Movie;
 import com.innovationTeam.refactoring.model.request.MovieRequestDto;
+import com.innovationTeam.refactoring.model.response.MovieResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.factory.Mappers;
@@ -11,4 +12,8 @@ public interface MovieMapper {
     MovieMapper INSTANCE = Mappers.getMapper(MovieMapper.class);
 
     Movie mapToMovie(MovieRequestDto movieRequestDto);
+
+    MovieResponse mapToMovieResponse(Movie movie);
+
+
 }
