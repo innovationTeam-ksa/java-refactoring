@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.innovationTeam.refactoring.utils.Constants.FAILED_CREATE_ERROR;
+
 @RestController
 @RequestMapping("/v1/movies")
 public class MovieController {
@@ -53,7 +55,7 @@ public class MovieController {
 
         if (savedMovie == null) {
             return ResponseEntity.ok(new ApiResponseBuilder<String>()
-                    .error(new ErrorResponse("CREATE_FAILED", "Failed to save movie", "An error occurred while saving movie"))
+                    .error(new ErrorResponse(FAILED_CREATE_ERROR, "Failed to save movie", "An error occurred while saving movie"))
                     .build());
         }
 

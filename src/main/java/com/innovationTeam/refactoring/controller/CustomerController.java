@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.innovationTeam.refactoring.utils.Constants.ERROR_OCCURED_MSG;
+import static com.innovationTeam.refactoring.utils.Constants.FAILED_CREATE_ERROR;
+import static com.innovationTeam.refactoring.utils.Constants.UserConstants.FAILED_TO_CREATE_USER_MSG;
+
 @RestController
 @RequestMapping("/v1/customers")
 public class CustomerController {
@@ -63,13 +67,13 @@ public class CustomerController {
 
         if (createdCustomer == null) {
             return ResponseEntity.ok(new ApiResponseBuilder<String>()
-                    .error(new ErrorResponse("CREATE_FAILED", "Failed to create user", "An error occurred while creating user"))
+                    .error(new ErrorResponse(FAILED_CREATE_ERROR, FAILED_TO_CREATE_USER_MSG, ERROR_OCCURED_MSG))
                     .build());
         }
 
         return ResponseEntity.ok(new ApiResponseBuilder<String>()
                 .success()
-                .addData("User added successfly")
+                .addData("User added successfully")
                 .build());
     }
 

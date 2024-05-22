@@ -44,7 +44,7 @@ public class MovieService implements MovieInterface {
 
     @Override
     public List<MovieResponse> getAllMovies() {
-        List<Movie> movies =  movieRepository.findAll();
+        List<Movie> movies = movieRepository.findAll();
         return movies.stream()
                 .map(MovieMapper.INSTANCE::mapToMovieResponse)
                 .collect(Collectors.toList());

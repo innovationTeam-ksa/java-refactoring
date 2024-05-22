@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MovieRentalRequestDto {
-    private int customerId;
-    private int movieId;
-    private int days;
+    private Long customerId;
+    private Long movieId;
+    private Long days;
 }
