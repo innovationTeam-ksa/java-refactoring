@@ -46,9 +46,8 @@ To install and run Innovation Task:
 ## 3. Database Schema
 ### Why choosing Relational DB?
 - as our Data is structured also to maintain data integrity so each record in rentalMovie table have a valid records in both customer and movie table.This ensures that each rental transaction is accurately linked to existing customer and movie data,
-<img width="700" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/c642addc-901e-4ed9-a966-177b234418b4">
-
-
+<img width="700" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/11d4ba64-99f9-44f3-a3e7-176e35ef71ad">
+ 
 ## 4. Api Documentation
 
 ## CustomerController
@@ -72,6 +71,10 @@ Manages operations related to customers.
   }
 
 
+#### Retrieve Customer Statement
+- **URL** : `/v1/customer/{customerId}/statement`
+- **Method** : `GET`
+- **Description** : `Retrives the rental statement for a specfic customer`
 
 
 
