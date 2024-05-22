@@ -10,11 +10,18 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.innovationTeam.refactoring.utils.Constants.MovieConstants.MOVIE_ID_NOT_NULL_ERROR;
+
 @Service
 @Transactional
 public class MovieService implements MovieInterface {
     @Autowired
-    private MovieRepository movieRepository;
+    private final MovieRepository movieRepository;
+
+    @Autowired
+    public MovieService(MovieRepository movieRepository) {
+        this.movieRepository = movieRepository;
+    }
 
     @Override
     public Movie saveMovie(Movie movie) {
@@ -22,9 +29,12 @@ public class MovieService implements MovieInterface {
     }
 
     @Override
-    public Movie getMovieById(Long id) {
+    public Optional<Movie> getMovieById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException(MOVIE_ID_NOT_NULL_ERROR);
+        }
         Optional<Movie> movie = movieRepository.findById(id);
-        return movie.orElseThrow(() -> new RuntimeException("Movie not found with id: " + id));
+        return movie;
     }
 
     @Override
