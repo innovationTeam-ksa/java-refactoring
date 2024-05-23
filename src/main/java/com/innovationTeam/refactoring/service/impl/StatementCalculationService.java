@@ -5,6 +5,8 @@ import com.innovationTeam.refactoring.entity.MovieRental;
 import com.innovationTeam.refactoring.model.RentalStatementInfo;
 import com.innovationTeam.refactoring.model.Statement;
 import com.innovationTeam.refactoring.service.StatementCalculationInterface;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,14 +17,17 @@ import static com.innovationTeam.refactoring.enums.Code.NEW;
 @Service
 public class StatementCalculationService implements StatementCalculationInterface {
 
+    private static final Logger logger = LoggerFactory.getLogger(StatementCalculationService.class);
+
     @Override
     public Statement calculateStatement(List<MovieRental> rentalList, String customerName) {
+        logger.info("Calculating statement for customer: {}", customerName);
+
         double totalAmount = 0;
         int frequentEnterPoints = 0;
 
         ArrayList<RentalStatementInfo> rentalStatementInfoList = new ArrayList<>();
         for (MovieRental rental : rentalList) {
-
             double thisAmount = calculateRentalAmount(rental);
             frequentEnterPoints++;
 
@@ -33,7 +38,10 @@ public class StatementCalculationService implements StatementCalculationInterfac
             totalAmount += thisAmount;
         }
 
-        return new Statement(rentalStatementInfoList, totalAmount, frequentEnterPoints, customerName);
+        Statement statement = new Statement(rentalStatementInfoList, totalAmount, frequentEnterPoints, customerName);
+        logger.info("Statement calculated: {}", statement);
+
+        return statement;
     }
 
     private double calculateRentalAmount(MovieRental rental) {
@@ -60,6 +68,7 @@ public class StatementCalculationService implements StatementCalculationInterfac
                 break;
         }
 
+        logger.debug("Rental amount calculated for movie '{}' with code '{}': {}", movie.getTitle(), movie.getCode(), thisAmount);
         return thisAmount;
     }
 

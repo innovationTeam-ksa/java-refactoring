@@ -5,6 +5,7 @@
 2. [Getting Started](#2-getting-started)
 3. [Database Schema](#3-database-schema)
 4. [API Documentation](#4-api-documentation)
+5. [Logging](#5-logging)
 
 ---
 
@@ -119,3 +120,14 @@ Manages operations related to movie rentals.
 - **URL**: `/v1/rentals/customers/{customerId}`
 - **Method**: `GET`
 - **Description**: Get all rentals for specfic Customer.
+
+## 5. Logging
+
+### Logging Integeration
+- This project utilizes Logback for logging.
+- I ensured the logging solution is clear and readable.
+<img width="600" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/d3b9ae85-4b10-48ae-93f1-65c66c26673b">
+<img width="200" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/787f8de7-da08-451c-b51f-0712546e54b9">
+
+*Example of logging output in the console and in the file `/logs/innovation-logs`.*
+ 
