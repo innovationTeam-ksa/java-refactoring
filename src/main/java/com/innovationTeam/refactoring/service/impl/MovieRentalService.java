@@ -11,6 +11,8 @@ import com.innovationTeam.refactoring.service.CustomerInterface;
 import com.innovationTeam.refactoring.service.MovieInterface;
 import com.innovationTeam.refactoring.service.MovieRentalInterface;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,8 @@ import static com.innovationTeam.refactoring.utils.Constants.UserConstants.CUSTO
 @Service
 @Transactional
 public class MovieRentalService implements MovieRentalInterface {
+    private static final Logger logger = LoggerFactory.getLogger(MovieRentalService.class);
+
     @Autowired
     CustomerInterface customerService;
     @Autowired
@@ -34,12 +38,11 @@ public class MovieRentalService implements MovieRentalInterface {
 
     @Override
     public MovieRentalResponse rentMovie(MovieRentalRequestDto movieRentalRequestDto) {
-
+        logger.info("Renting movie with ID {} for customer with ID {}", movieRentalRequestDto.getMovieId(), movieRentalRequestDto.getCustomerId());
         Customer customer = customerService.getCustomerById(movieRentalRequestDto.getCustomerId())
                 .orElseThrow(() -> new IllegalArgumentException(String.format(CUSTOMER_NOT_FOUND_ERROR, movieRentalRequestDto.getCustomerId())));
         Movie movie = movieService.getMovieById(movieRentalRequestDto.getMovieId())
                 .orElseThrow(() -> new IllegalArgumentException(MOVIE_ID_NOT_NULL_ERROR));
-
 
         MovieRental movieRental = new MovieRental();
         movieRental.setMovie(movie);
@@ -53,14 +56,19 @@ public class MovieRentalService implements MovieRentalInterface {
 
     @Override
     public List<MovieRentalResponse> getRentalsByCustomer(Long customerId) {
+        logger.info("Fetching rentals for customer with ID {}", customerId);
         List<MovieRental> movieRentalList = new ArrayList<>();
         Optional<Customer> customer = customerService.getCustomerById(customerId);
         if (customer.isPresent()) {
             movieRentalList = customer.get().getRentals();
         }
 
-        return movieRentalList.stream()
+        List<MovieRentalResponse> movieRentalResponses = movieRentalList.stream()
                 .map(MovieMapper.INSTANCE::mapToMovieRentalResponse)
                 .collect(Collectors.toList());
+
+        logger.info("Fetched {} rentals for customer with ID {}", movieRentalResponses.size(), customerId);
+        return movieRentalResponses;
     }
+
 }
