@@ -31,5 +31,6 @@ public class StatementPrintingService implements StatementPrintingInterface {
         logger.debug("Generated statement: {}", result);
 
         return result.toString();
+
     }
 }

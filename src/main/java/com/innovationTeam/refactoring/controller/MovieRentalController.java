@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -30,34 +31,28 @@ public class MovieRentalController {
     @Autowired
     MovieRentalInterface movieRentalService;
 
-
     @PostMapping
     @Operation(summary = "Rent a movie", description = "Rent a movie for a customer")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully rented the movie"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<ApiResponseModel<MovieRentalResponse>> rentMovie(@RequestBody MovieRentalRequestDto rentalRequest) {
-         try {
-            MovieRentalResponse movieRentalResponse = movieRentalService.rentMovie(rentalRequest);
-
-            if (movieRentalResponse == null) {
-                 return ResponseEntity.ok(new ApiResponseBuilder<MovieRentalResponse>()
-                        .error(new ErrorResponse(FAILED_CREATE_ERROR, FAILED_TO_RENT_MOVIE_MSG, ERROR_OCCURED_MSG))
-                        .build());
-            }
-
-             return ResponseEntity.ok(new ApiResponseBuilder<MovieRentalResponse>()
-                    .success()
-                    .addData(movieRentalResponse)
-                    .build());
-        } catch (Exception e) {
-            logger.error("Error renting movie for customer with ID: {}", rentalRequest.getCustomerId(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponseBuilder<MovieRentalResponse>()
-                            .error(new ErrorResponse("Internal server error", "Failed to rent movie", "An error occurred while renting movie"))
+    public Mono<ResponseEntity<ApiResponseModel<MovieRentalResponse>>> rentMovie(@RequestBody MovieRentalRequestDto rentalRequest) {
+        return movieRentalService.rentMovie(rentalRequest)
+                .map(movieRentalResponse -> {
+                    logger.info("Movie rented successfully: {}", movieRentalResponse);
+                    return ResponseEntity.ok(new ApiResponseBuilder<MovieRentalResponse>()
+                            .success()
+                            .addData(movieRentalResponse)
                             .build());
-        }
+                })
+                .onErrorResume(e -> {
+                    logger.error("Error renting movie for customer with ID: {}", rentalRequest.getCustomerId(), e);
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body(new ApiResponseBuilder<MovieRentalResponse>()
+                                    .error(new ErrorResponse(FAILED_CREATE_ERROR, FAILED_TO_RENT_MOVIE_MSG, ERROR_OCCURED_MSG))
+                                    .build()));
+                });
     }
 
     @GetMapping("/customers/{customerId}")
@@ -66,25 +61,30 @@ public class MovieRentalController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved all rentals for the customer"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<ApiResponseModel<List<MovieRentalResponse>>> getRentalsByCustomer(@PathVariable long customerId) {
-        logger.info("Fetching rentals for customer with ID: {}", customerId);
-        try {
-            List<MovieRentalResponse> movieRentalResponses = movieRentalService.getRentalsByCustomer(customerId);
-
-            ApiResponseModel<List<MovieRentalResponse>> apiResponse = new ApiResponseBuilder<List<MovieRentalResponse>>()
-                    .success()
-                    .addData(movieRentalResponses)
-                    .build();
-
-            logger.info("Fetched {} rentals for customer with ID: {}", movieRentalResponses.size(), customerId);
-            return ResponseEntity.ok(apiResponse);
-        } catch (Exception e) {
-            logger.error("Error fetching rentals for customer with ID: {}", customerId, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponseBuilder<List<MovieRentalResponse>>()
-                            .error(new ErrorResponse("Internal server error", "Failed to fetch rentals", "An error occurred while fetching rentals"))
+    public Mono<ResponseEntity<ApiResponseModel<List<MovieRentalResponse>>>> getRentalsByCustomer(@PathVariable long customerId) {
+        return movieRentalService.getRentalsByCustomer(customerId)
+                .collectList()
+                .map(movieRentalResponse -> {
+                    logger.info("Fetched rental: {}", movieRentalResponse);
+                    return ResponseEntity.ok(new ApiResponseBuilder<List<MovieRentalResponse>>()
+                            .success()
+                            .addData(movieRentalResponse)
                             .build());
-        }
+                })
+                .switchIfEmpty(Mono.defer(() -> {
+                    logger.warn("No rentals found for customer with ID: {}", customerId);
+                    return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                            .body(new ApiResponseBuilder<List<MovieRentalResponse>>()
+                                    .error(new ErrorResponse("Not Found", "No rentals found", "No rentals found for the customer"))
+                                    .build()));
+                }))
+                .onErrorResume(e -> {
+                    logger.error("Error fetching rentals for customer with ID: {}", customerId, e);
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body(new ApiResponseBuilder<List<MovieRentalResponse>>()
+                                    .error(new ErrorResponse("Internal server error", "Failed to fetch rentals", "An error occurred while fetching rentals"))
+                                    .build()));
+                });
     }
 
 }

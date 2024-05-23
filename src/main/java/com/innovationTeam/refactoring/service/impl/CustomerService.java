@@ -3,7 +3,6 @@ package com.innovationTeam.refactoring.service.impl;
 import com.innovationTeam.refactoring.entity.Customer;
 import com.innovationTeam.refactoring.exception.CustomerNotFoundException;
 import com.innovationTeam.refactoring.mapper.CustomerMapper;
-import com.innovationTeam.refactoring.model.Statement;
 import com.innovationTeam.refactoring.model.request.CustomerRequestDto;
 import com.innovationTeam.refactoring.model.response.CustomerResponse;
 import com.innovationTeam.refactoring.repository.CustomerRepository;
@@ -15,10 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.innovationTeam.refactoring.utils.Constants.UserConstants.*;
 
@@ -34,55 +34,60 @@ public class CustomerService implements CustomerInterface {
     @Autowired
     StatementPrintingInterface statementPrintingService;
 
-    @Override
-    public List<CustomerResponse> getAllCustomers() {
+    public Flux<CustomerResponse> getAllCustomers() {
         logger.info("Fetching all customers");
+
         List<Customer> customers = customerRepository.findAll();
         logger.debug("Found {} customers", customers.size());
-        return customers.stream()
-                .map(CustomerMapper.INSTANCE::mapToCustomerResponse)
-                .collect(Collectors.toList());
+
+        return Flux.fromIterable(customers)
+                .doOnNext(customer -> logger.debug("Processing customer: {}", customer))
+                .map(CustomerMapper.INSTANCE::mapToCustomerResponse);
     }
 
+
     @Override
-    public Optional<Customer> getCustomerById(Long id) {
+    public Mono<Customer> getCustomerById(Long id) {
         logger.info("Fetching customer with id: {}", id);
         if (id == null) {
             logger.error("Customer id is null");
-            throw new IllegalArgumentException(CUSTOMER_ID_NULL_ERROR);
+            return Mono.error(new IllegalArgumentException(CUSTOMER_ID_NULL_ERROR));
         }
-        Optional<Customer> customer = customerRepository.findById(id);
-        if (customer.isEmpty()) {
-            logger.warn("Customer with id {} not found", id);
-        }
-        return customer;
+
+        return Mono.defer(() -> {
+            Optional<Customer> customer = customerRepository.findById(id);
+            if (customer.isEmpty()) {
+                logger.warn("Customer with id {} not found", id);
+                return Mono.empty();
+            } else {
+                return Mono.just(customer.get());
+            }
+        });
     }
 
-    @Override
-    public String generateCustomerStatement(Long customerId) {
-        logger.info("Generating statement for customer with id: {}", customerId);
-        return getCustomerById(customerId)
-                .map(customer -> {
-                    Statement statement = statementCalculationService.calculateStatement(customer.getRentals(), customer.getName());
-                    String printedStatement = statementPrintingService.printStatement(statement);
-                    logger.debug("Generated statement: {}", printedStatement);
-                    return printedStatement;
+    public Mono<String> generateCustomerStatement(Long customerId) {
+        return Mono.just(customerRepository.findById(customerId))
+                .flatMap(customer -> {
+                     return statementCalculationService.calculateStatement(customer.get().getRentals(), customer.get().getName())
+                            .map(statement -> {
+                                 String printedStatement = statementPrintingService.printStatement(statement);
+                                logger.debug("Generated statement: {}", printedStatement);
+                                return printedStatement;
+                            });
                 })
-                .orElseThrow(() -> {
-                    logger.error("Customer with id {} not found", customerId);
-                    return new CustomerNotFoundException(String.format(CUSTOMER_NOT_FOUND_ERROR, customerId));
-                });
+                .switchIfEmpty(Mono.error(new CustomerNotFoundException(String.format("Customer with id %d not found", customerId))));
     }
 
     @Override
-    public Customer createCustomer(CustomerRequestDto customerRequestDto) {
+    public Mono<Customer> createCustomer(CustomerRequestDto customerRequestDto) {
         logger.info("Creating new customer: {}", customerRequestDto.getName());
         validateCustomerRequest(customerRequestDto);
+
         Customer customer = CustomerMapper.INSTANCE.mapToCustomer(customerRequestDto);
-        Customer savedCustomer = customerRepository.save(customer);
-        logger.info("Created new customer with id: {}", savedCustomer.getId());
-        return savedCustomer;
+        return Mono.just(customerRepository.save(customer))
+                .doOnNext(savedCustomer -> logger.info("Created new customer with id: {}", savedCustomer.getId()));
     }
+
 
     private void validateCustomerRequest(CustomerRequestDto customerRequestDto) {
         if (customerRequestDto == null) {
