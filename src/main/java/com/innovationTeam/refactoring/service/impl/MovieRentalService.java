@@ -15,10 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.innovationTeam.refactoring.utils.Constants.MovieConstants.MOVIE_ID_NOT_NULL_ERROR;
@@ -37,38 +37,49 @@ public class MovieRentalService implements MovieRentalInterface {
     MovieRentalRepository movieRentalRepository;
 
     @Override
-    public MovieRentalResponse rentMovie(MovieRentalRequestDto movieRentalRequestDto) {
+    public Mono<MovieRentalResponse> rentMovie(MovieRentalRequestDto movieRentalRequestDto) {
         logger.info("Renting movie with ID {} for customer with ID {}", movieRentalRequestDto.getMovieId(), movieRentalRequestDto.getCustomerId());
-        Customer customer = customerService.getCustomerById(movieRentalRequestDto.getCustomerId())
-                .orElseThrow(() -> new IllegalArgumentException(String.format(CUSTOMER_NOT_FOUND_ERROR, movieRentalRequestDto.getCustomerId())));
-        Movie movie = movieService.getMovieById(movieRentalRequestDto.getMovieId())
-                .orElseThrow(() -> new IllegalArgumentException(MOVIE_ID_NOT_NULL_ERROR));
 
-        MovieRental movieRental = new MovieRental();
-        movieRental.setMovie(movie);
-        movieRental.setCustomer(customer);
-        movieRental.setDays(movieRentalRequestDto.getDays());
+        Mono<Customer> customerMono = customerService.getCustomerById(movieRentalRequestDto.getCustomerId())
+                .switchIfEmpty(Mono.error(new IllegalArgumentException(String.format(CUSTOMER_NOT_FOUND_ERROR, movieRentalRequestDto.getCustomerId()))));
 
-        movieRentalRepository.save(movieRental);
+        Mono<Movie> movieMono = movieService.getMovieById(movieRentalRequestDto.getMovieId())
+                .switchIfEmpty(Mono.error(new IllegalArgumentException(MOVIE_ID_NOT_NULL_ERROR)));
 
-        return MovieMapper.INSTANCE.mapToMovieRentalResponse(movieRental);
+        return Mono.zip(customerMono, movieMono)
+                .flatMap(tuple -> {
+                    Customer customer = tuple.getT1();
+                    Movie movie = tuple.getT2();
+
+                    MovieRental movieRental = new MovieRental();
+                    movieRental.setMovie(movie);
+                    movieRental.setCustomer(customer);
+                    movieRental.setDays(movieRentalRequestDto.getDays());
+
+                    movieRentalRepository.save(movieRental);
+
+                    return Mono.just(MovieMapper.INSTANCE.mapToMovieRentalResponse(movieRental));
+                });
     }
 
     @Override
-    public List<MovieRentalResponse> getRentalsByCustomer(Long customerId) {
+    public Flux<MovieRentalResponse> getRentalsByCustomer(Long customerId) {
         logger.info("Fetching rentals for customer with ID {}", customerId);
-        List<MovieRental> movieRentalList = new ArrayList<>();
-        Optional<Customer> customer = customerService.getCustomerById(customerId);
-        if (customer.isPresent()) {
-            movieRentalList = customer.get().getRentals();
-        }
 
-        List<MovieRentalResponse> movieRentalResponses = movieRentalList.stream()
-                .map(MovieMapper.INSTANCE::mapToMovieRentalResponse)
-                .collect(Collectors.toList());
+        return customerService.getCustomerById(customerId)
+                .flatMapMany(customer -> {
+                    List<MovieRental> movieRentalList = customer.getRentals();
 
-        logger.info("Fetched {} rentals for customer with ID {}", movieRentalResponses.size(), customerId);
-        return movieRentalResponses;
+                    List<MovieRentalResponse> movieRentalResponses = movieRentalList.stream()
+                            .map(MovieMapper.INSTANCE::mapToMovieRentalResponse)
+                            .collect(Collectors.toList());
+
+                    logger.info("Fetched {} rentals for customer with ID {}", movieRentalResponses.size(), customerId);
+                    return Flux.fromIterable(movieRentalResponses);
+                })
+                .switchIfEmpty(Flux.defer(() -> {
+                    logger.warn("Customer with ID {} not found", customerId);
+                    return Flux.empty();
+                }));
     }
-
 }

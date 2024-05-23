@@ -2,11 +2,11 @@ package com.innovationTeam.refactoring.service;
 
 import com.innovationTeam.refactoring.model.request.MovieRentalRequestDto;
 import com.innovationTeam.refactoring.model.response.MovieRentalResponse;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface MovieRentalInterface {
-    MovieRentalResponse rentMovie(MovieRentalRequestDto movieRentalRequestDto);
+    Mono<MovieRentalResponse> rentMovie(MovieRentalRequestDto movieRentalRequestDto);
 
-    List<MovieRentalResponse> getRentalsByCustomer(Long customerId);
+    Flux<MovieRentalResponse> getRentalsByCustomer(Long customerId);
 }

@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,48 +26,38 @@ public class MovieService implements MovieInterface {
 
     private static final Logger logger = LoggerFactory.getLogger(MovieService.class);
 
-    private final MovieRepository movieRepository;
-
     @Autowired
-    public MovieService(MovieRepository movieRepository) {
-        this.movieRepository = movieRepository;
-    }
+    private  MovieRepository movieRepository;
 
     @Override
-    public Movie saveMovie(MovieRequestDto movieRequest) {
-        logger.info("Saving movie: {}", movieRequest);
-
+    public Mono<Movie> saveMovie(MovieRequestDto movieRequest) {
         Movie movie = MovieMapper.INSTANCE.mapToMovie(movieRequest);
-        Movie savedMovie = movieRepository.save(movie);
-
-        logger.info("Saved movie: {}", savedMovie);
-        return savedMovie;
+        return Mono.fromCallable(() -> movieRepository.save(movie))
+                .doOnSuccess(savedMovie -> logger.info("Saved movie: {}", savedMovie));
     }
 
     @Override
-    public Optional<Movie> getMovieById(Long id) {
-        logger.info("Fetching movie by ID: {}", id);
-
+    public Mono<Movie> getMovieById(Long id) {
         if (id == null) {
-            throw new IllegalArgumentException(MOVIE_ID_NOT_NULL_ERROR);
+            return Mono.error(new IllegalArgumentException(MOVIE_ID_NOT_NULL_ERROR));
         }
 
-        Optional<Movie> movie = movieRepository.findById(id);
-
-        logger.info("Fetched movie: {}", movie.orElse(null));
-        return movie;
+        return Mono.defer(() -> {
+            Optional<Movie> movieOptional = movieRepository.findById(id);
+            logger.info("Fetched movie: {}", movieOptional.orElse(null));
+            return Mono.justOrEmpty(movieOptional);
+        });
     }
 
     @Override
-    public List<MovieResponse> getAllMovies() {
-        logger.info("Fetching all movies");
-
-        List<Movie> movies = movieRepository.findAll();
-        List<MovieResponse> movieResponses = movies.stream()
-                .map(MovieMapper.INSTANCE::mapToMovieResponse)
-                .collect(Collectors.toList());
-
-        logger.info("Fetched {} movies", movies.size());
-        return movieResponses;
+    public Flux<MovieResponse> getAllMovies() {
+        return Flux.defer(() -> {
+            List<Movie> movies = movieRepository.findAll();
+            List<MovieResponse> movieResponses = movies.stream()
+                    .map(MovieMapper.INSTANCE::mapToMovieResponse)
+                    .collect(Collectors.toList());
+            logger.info("Fetched {} movies", movies.size());
+            return Flux.fromIterable(movieResponses);
+        });
     }
 }

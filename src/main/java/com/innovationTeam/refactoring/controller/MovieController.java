@@ -1,6 +1,5 @@
 package com.innovationTeam.refactoring.controller;
 
-import com.innovationTeam.refactoring.entity.Movie;
 import com.innovationTeam.refactoring.model.request.MovieRequestDto;
 import com.innovationTeam.refactoring.model.response.ApiResponseBuilder;
 import com.innovationTeam.refactoring.model.response.ApiResponseModel;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -34,20 +34,20 @@ public class MovieController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved list of movies"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<ApiResponseModel<List<MovieResponse>>> getAllMovies() {
-         try {
-            List<MovieResponse> movieResponses = movieService.getAllMovies();
-            return ResponseEntity.ok(new ApiResponseBuilder<List<MovieResponse>>()
-                    .success()
-                    .addData(movieResponses)
-                    .build());
-        } catch (Exception e) {
-            logger.error("Failed to fetch all movies", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponseBuilder<List<MovieResponse>>()
-                            .error(new ErrorResponse("Failed to fetch movies", "Failed to retrieve movies list", "An error occurred while fetching movies"))
-                            .build());
-        }
+    public Mono<ResponseEntity<ApiResponseModel<List<MovieResponse>>>> getAllMovies() {
+        return movieService.getAllMovies()
+                .collectList()
+                .map(movieResponses -> ResponseEntity.ok(new ApiResponseBuilder<List<MovieResponse>>()
+                        .success()
+                        .addData(movieResponses)
+                        .build()))
+                .onErrorResume(e -> {
+                    logger.error("Failed to fetch all movies", e);
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body(new ApiResponseBuilder<List<MovieResponse>>()
+                                    .error(new ErrorResponse("Failed to fetch movies", "Failed to retrieve movies list", "An error occurred while fetching movies"))
+                                    .build()));
+                });
     }
 
     @PostMapping
@@ -57,27 +57,27 @@ public class MovieController {
             @ApiResponse(responseCode = "400", description = "Invalid input")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ApiResponseModel<String>> createMovie(@RequestBody MovieRequestDto movieRequest) {
-         try {
-            Movie savedMovie = movieService.saveMovie(movieRequest);
-
-            if (savedMovie == null) {
-                return ResponseEntity.ok(new ApiResponseBuilder<String>()
-                        .error(new ErrorResponse(FAILED_CREATE_ERROR, "Failed to save movie", "An error occurred while saving movie"))
-                        .build());
-            }
-
-            return ResponseEntity.ok(new ApiResponseBuilder<String>()
-                    .success()
-                    .addData("Movie saved successfully")
-                    .build());
-        } catch (Exception e) {
-            logger.error("Failed to create movie", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ApiResponseBuilder<String>()
-                            .error(new ErrorResponse("Failed to create movie", "Failed to save movie", "An error occurred while saving movie"))
-                            .build());
-        }
+    public Mono<ResponseEntity<ApiResponseModel<String>>> createMovie(@RequestBody MovieRequestDto movieRequest) {
+        return movieService.saveMovie(movieRequest)
+                .map(savedMovie -> {
+                    if (savedMovie == null) {
+                        return ResponseEntity.ok(new ApiResponseBuilder<String>()
+                                .error(new ErrorResponse(FAILED_CREATE_ERROR, "Failed to save movie", "An error occurred while saving movie"))
+                                .build());
+                    } else {
+                        return ResponseEntity.ok(new ApiResponseBuilder<String>()
+                                .success()
+                                .addData("Movie saved successfully")
+                                .build());
+                    }
+                })
+                .onErrorResume(e -> {
+                    logger.error("Failed to create movie", e);
+                    return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body(new ApiResponseBuilder<String>()
+                                    .error(new ErrorResponse("Failed to create movie", "Failed to save movie", "An error occurred while saving movie"))
+                                    .build()));
+                });
     }
 
 }

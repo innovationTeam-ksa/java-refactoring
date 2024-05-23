@@ -3,16 +3,15 @@ package com.innovationTeam.refactoring.service;
 import com.innovationTeam.refactoring.entity.Customer;
 import com.innovationTeam.refactoring.model.request.CustomerRequestDto;
 import com.innovationTeam.refactoring.model.response.CustomerResponse;
-
-import java.util.List;
-import java.util.Optional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface CustomerInterface {
-    List<CustomerResponse> getAllCustomers();
+    Flux<CustomerResponse> getAllCustomers();
 
-    Customer createCustomer(CustomerRequestDto name);
+    Mono<Customer> createCustomer(CustomerRequestDto name);
 
-    Optional<Customer> getCustomerById(Long id);
+    Mono<Customer> getCustomerById(Long id);
 
-    String generateCustomerStatement(Long customerId);
+    Mono<String> generateCustomerStatement(Long customerId);
 }
