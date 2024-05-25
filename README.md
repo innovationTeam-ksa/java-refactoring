@@ -6,7 +6,7 @@
 4. [API Documentation](#4-api-documentation)
 5. [Logging](#5-logging)
 6. [Unit Testing](#6-unit-testing)
-
+7. [Test Coverage](#7-test-coverage)
 ---
 
 ## 1. Introduction
@@ -137,5 +137,14 @@ Manages operations related to movie rentals.
 - Test coverage is shown in the "test-coverage" section.
  <img width="700" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/0a91790f-bfb0-4bf8-a574-658be7296ccd">
 
+## 7. Test Coverage
+- Using JaCoCo to measure the test coverage of our codebase.
+- To run and generate a report write `mvn clean test jacoco:report` 
+- In Jacoco report I have execluded models,enums,repository,constants,entities from the overall coverage as below
+<img width="300" alt="Screen Shot 2024-05-25 at 9 22 17 PM" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/7ef50e80-3fbe-4986-b776-41cbb7b3097c">
 
-  
+<img width="600" alt="Screen Shot 2024-05-25 at 9 19 51 PM" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/c9010559-a0de-40b0-ad5d-219413a6b519">
+
+<img width="600" alt="coverage" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/f41cc5f8-cda6-4220-a863-76e6a54b5fb5">
+
+
