@@ -102,6 +102,17 @@
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.8.12</version>
+                    <configuration>
+                        <excludes>
+                            <exclude>com/innovationTeam/refactoring/entity/**,
+                                com/innovationTeam/refactoring/RefactoringApplication.class,
+                                com/innovationTeam/refactoring/enums/**,
+                                com/innovationTeam/refactoring/model/**,
+                                com/innovationTeam/refactoring/repository/**,
+                                com/innovationTeam/refactoring/utils/Constants$*.*,
+                                com/innovationTeam/refactoring/utils/Constants.class</exclude>
+                        </excludes>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

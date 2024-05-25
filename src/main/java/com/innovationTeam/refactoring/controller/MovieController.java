@@ -19,8 +19,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static com.innovationTeam.refactoring.utils.Constants.FAILED_CREATE_ERROR;
-
 @RestController
 @RequestMapping("/v1/movies")
 public class MovieController {
@@ -59,18 +57,13 @@ public class MovieController {
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<ResponseEntity<ApiResponseModel<String>>> createMovie(@RequestBody MovieRequestDto movieRequest) {
         return movieService.saveMovie(movieRequest)
-                .map(savedMovie -> {
-                    if (savedMovie == null) {
-                        return ResponseEntity.ok(new ApiResponseBuilder<String>()
-                                .error(new ErrorResponse(FAILED_CREATE_ERROR, "Failed to save movie", "An error occurred while saving movie"))
-                                .build());
-                    } else {
-                        return ResponseEntity.ok(new ApiResponseBuilder<String>()
-                                .success()
-                                .addData("Movie saved successfully")
-                                .build());
-                    }
-                })
+                .flatMap(savedMovie -> Mono.just(ResponseEntity.ok(new ApiResponseBuilder<String>()
+                        .success()
+                        .addData("Movie saved successfully")
+                        .build())))
+                .switchIfEmpty(Mono.just(ResponseEntity.ok(new ApiResponseBuilder<String>()
+                        .error(new ErrorResponse("FAILED_CREATE_ERROR", "Failed to save movie", "An error occurred while saving movie"))
+                        .build())))
                 .onErrorResume(e -> {
                     logger.error("Failed to create movie", e);
                     return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

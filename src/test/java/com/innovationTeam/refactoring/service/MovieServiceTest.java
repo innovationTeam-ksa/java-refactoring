@@ -38,14 +38,14 @@ public class MovieServiceTest {
 
     @Test
     void saveMovie_ValidRequest_ReturnsSavedMovie() {
-         MovieRequestDto requestDto = new MovieRequestDto("Movie Title", Code.REGULAR);
+        MovieRequestDto requestDto = new MovieRequestDto("Movie Title", Code.REGULAR);
 
-        Movie savedMovie = new Movie(1L,"Movie Title",Code.REGULAR);
+        Movie savedMovie = new Movie(1L, "Movie Title", Code.REGULAR);
         when(movieRepository.save(any())).thenReturn(savedMovie);
 
-         Mono<Movie> savedMovieMono = movieService.saveMovie(requestDto);
+        Mono<Movie> savedMovieMono = movieService.saveMovie(requestDto);
 
-         StepVerifier.create(savedMovieMono)
+        StepVerifier.create(savedMovieMono)
                 .expectNextMatches(movie -> {
                     assertThat(movie.getId()).isEqualTo(1L);
                     assertThat(movie.getTitle()).isEqualTo("Movie Title");
@@ -59,30 +59,31 @@ public class MovieServiceTest {
 
     @Test
     void saveMovie_NullRequest_ThrowsIllegalArgumentException() {
-         MovieRequestDto nullRequestDto = null;
+        MovieRequestDto nullRequestDto = null;
 
-         Mono<Movie> savedMovieMono = movieService.saveMovie(nullRequestDto);
+        Mono<Movie> savedMovieMono = movieService.saveMovie(nullRequestDto);
 
-         StepVerifier.create(savedMovieMono)
+        StepVerifier.create(savedMovieMono)
                 .expectError(IllegalArgumentException.class)
                 .verify();
 
         verify(movieRepository, never()).save(any());
     }
+
     @Test
     void getMovieById_ValidId_ReturnsMovie() {
-         long movieId = 1L;
+        long movieId = 1L;
         Movie movie = new Movie(movieId, "Movie Title", Code.REGULAR);
         when(movieRepository.findById(movieId)).thenReturn(java.util.Optional.of(movie));
 
-         Mono<Movie> movieMono = movieService.getMovieById(movieId);
+        Mono<Movie> movieMono = movieService.getMovieById(movieId);
 
-         StepVerifier.create(movieMono)
+        StepVerifier.create(movieMono)
                 .expectNextMatches(savedMovie -> {
                     assertThat(savedMovie.getId()).isEqualTo(movieId);
                     assertThat(savedMovie.getTitle()).isEqualTo("Movie Title");
                     assertThat(savedMovie.getCode()).isEqualTo(Code.REGULAR);
-                     return true;
+                    return true;
                 })
                 .verifyComplete();
 
@@ -94,9 +95,9 @@ public class MovieServiceTest {
     void getMovieById_NullId_ThrowsIllegalArgumentException() {
         Long nullId = null;
 
-         Mono<Movie> movieMono = movieService.getMovieById(nullId);
+        Mono<Movie> movieMono = movieService.getMovieById(nullId);
 
-         StepVerifier.create(movieMono)
+        StepVerifier.create(movieMono)
                 .expectError(IllegalArgumentException.class)
                 .verify();
 
@@ -105,29 +106,30 @@ public class MovieServiceTest {
 
     @Test
     void getMovieById_InvalidId_ReturnsEmptyMono() {
-         long invalidMovieId = 100L;
+        long invalidMovieId = 100L;
         when(movieRepository.findById(invalidMovieId)).thenReturn(java.util.Optional.empty());
 
-         Mono<Movie> movieMono = movieService.getMovieById(invalidMovieId);
+        Mono<Movie> movieMono = movieService.getMovieById(invalidMovieId);
 
-         StepVerifier.create(movieMono)
+        StepVerifier.create(movieMono)
                 .expectNextCount(0)
                 .verifyComplete();
 
         verify(movieRepository, times(1)).findById(invalidMovieId);
     }
-     @Test
+
+    @Test
     void getAllMovies_ReturnsAllMovies() {
-         List<Movie> movies = Arrays.asList(
+        List<Movie> movies = Arrays.asList(
                 new Movie(1L, "Movie 1", Code.REGULAR),
                 new Movie(2L, "Movie 2", Code.NEW),
                 new Movie(3L, "Movie 3", Code.CHILDRENS)
         );
         when(movieRepository.findAll()).thenReturn(movies);
 
-         Flux<MovieResponse> movieResponseFlux = movieService.getAllMovies();
+        Flux<MovieResponse> movieResponseFlux = movieService.getAllMovies();
 
-         StepVerifier.create(movieResponseFlux)
+        StepVerifier.create(movieResponseFlux)
                 .expectNextCount(3)
                 .verifyComplete();
 
@@ -136,12 +138,12 @@ public class MovieServiceTest {
 
     @Test
     void getAllMovies_EmptyList_ReturnsEmptyFlux() {
-         List<Movie> emptyList = new ArrayList<>();
+        List<Movie> emptyList = new ArrayList<>();
         when(movieRepository.findAll()).thenReturn(emptyList);
 
-         Flux<MovieResponse> movieResponseFlux = movieService.getAllMovies();
+        Flux<MovieResponse> movieResponseFlux = movieService.getAllMovies();
 
-         StepVerifier.create(movieResponseFlux)
+        StepVerifier.create(movieResponseFlux)
                 .expectNextCount(0)
                 .verifyComplete();
 

@@ -14,6 +14,8 @@ public final class Constants {
     public static final String FAILED_CREATE_ERROR = "CREATE_FAILED";
     public static final String ERROR_OCCURED_MSG = "An error occurred";
 
+    public static final String MOVIE_REQUEST_DTO_NULL_ERROR = "MovieRequestDto must not be null";
+
 
     public static class UserConstants {
         private UserConstants() {
@@ -49,6 +51,7 @@ public final class Constants {
         }
 
         public static final String FAILED_TO_RENT_MOVIE_MSG = "Failed to create rent movie";
+        public static final String MISSING_CUSTOMER_OR_MOVIE_MSG = "Both customer and movie are required";
     }
 
 }

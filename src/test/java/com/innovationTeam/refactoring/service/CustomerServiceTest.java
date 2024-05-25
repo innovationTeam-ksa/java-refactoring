@@ -5,13 +5,10 @@ import com.innovationTeam.refactoring.entity.Movie;
 import com.innovationTeam.refactoring.entity.MovieRental;
 import com.innovationTeam.refactoring.enums.Code;
 import com.innovationTeam.refactoring.exception.CustomerNotFoundException;
-import com.innovationTeam.refactoring.mapper.CustomerMapper;
 import com.innovationTeam.refactoring.model.Statement;
 import com.innovationTeam.refactoring.model.request.CustomerRequestDto;
 import com.innovationTeam.refactoring.model.response.CustomerResponse;
 import com.innovationTeam.refactoring.repository.CustomerRepository;
-import com.innovationTeam.refactoring.service.StatementCalculationInterface;
-import com.innovationTeam.refactoring.service.StatementPrintingInterface;
 import com.innovationTeam.refactoring.service.impl.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +20,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -62,20 +58,19 @@ public class CustomerServiceTest {
 
         rental = new MovieRental();
         rental.setId(1L);
-        rental.setMovie(new Movie(1L , "title" , Code.NEW));
+        rental.setMovie(new Movie(1L, "title", Code.NEW));
         rental.setCustomer(customer);
         rental.setDays(23L);
 
-        customer.setRentals(Arrays.asList(rental));
+        customer.setRentals(Collections.singletonList(rental));
         statement = new Statement();
         statement.setCustomerName("Customer name");
-        statement.setRentals(Collections.singletonList(rental));
-        statement.setTotalAmount(10.0);
+         statement.setTotalAmount(10.0);
     }
 
     @Test
     void getAllCustomers_ShouldReturnCustomers() {
-        when(customerRepository.findAll()).thenReturn(Arrays.asList(customer));
+        when(customerRepository.findAll()).thenReturn(Collections.singletonList(customer));
 
         Flux<CustomerResponse> customerFlux = customerService.getAllCustomers();
 

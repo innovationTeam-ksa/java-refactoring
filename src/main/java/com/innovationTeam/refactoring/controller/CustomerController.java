@@ -30,7 +30,7 @@ import static com.innovationTeam.refactoring.utils.Constants.ERROR_OCCURED_MSG;
 @Slf4j
 public class CustomerController {
     @Autowired
-    private  CustomerService customerService;
+    private CustomerService customerService;
     private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
 
 
@@ -70,17 +70,13 @@ public class CustomerController {
                     content = @Content(schema = @Schema(implementation = CustomerRequestDto.class)))
             @RequestBody CustomerRequestDto customerRequest) {
         return customerService.createCustomer(customerRequest)
-                .map(createdCustomer -> {
-                    if (createdCustomer == null) {
-                        return ResponseEntity.ok(new ApiResponseBuilder<String>()
-                                .error(new ErrorResponse("FAILED_CREATE_ERROR", "FAILED_TO_CREATE_USER_MSG", "ERROR_OCCURED_MSG"))
-                                .build());
-                    }
-                    return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseBuilder<String>()
-                            .success()
-                            .addData("User added successfully")
-                            .build());
-                })
+                .flatMap(createdCustomer -> Mono.just(ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseBuilder<String>()
+                        .success()
+                        .addData("User added successfully")
+                        .build())))
+                .switchIfEmpty(Mono.just(ResponseEntity.ok(new ApiResponseBuilder<String>()
+                        .error(new ErrorResponse("FAILED_CREATE_ERROR", "FAILED_TO_CREATE_USER_MSG", "ERROR_OCCURED_MSG"))
+                        .build())))
                 .onErrorResume(e -> {
                     logger.error("Failed to create customer", e);
                     return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

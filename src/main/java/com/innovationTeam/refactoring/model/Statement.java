@@ -1,5 +1,6 @@
 package com.innovationTeam.refactoring.model;
 
+import com.innovationTeam.refactoring.entity.MovieRental;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,4 +15,5 @@ public class Statement {
     private double totalAmount;
     private int frequentEnterPoints;
     private String customerName;
+
 }

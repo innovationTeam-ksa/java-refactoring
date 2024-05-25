@@ -70,15 +70,7 @@ public class MovieRentalController {
                             .success()
                             .addData(movieRentalResponse)
                             .build());
-                })
-                .switchIfEmpty(Mono.defer(() -> {
-                    logger.warn("No rentals found for customer with ID: {}", customerId);
-                    return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND)
-                            .body(new ApiResponseBuilder<List<MovieRentalResponse>>()
-                                    .error(new ErrorResponse("Not Found", "No rentals found", "No rentals found for the customer"))
-                                    .build()));
-                }))
-                .onErrorResume(e -> {
+                }).onErrorResume(e -> {
                     logger.error("Error fetching rentals for customer with ID: {}", customerId, e);
                     return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                             .body(new ApiResponseBuilder<List<MovieRentalResponse>>()
