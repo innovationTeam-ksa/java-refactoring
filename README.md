@@ -1,11 +1,11 @@
-
+<img width="446" alt="Screen Shot 2024-05-25 at 12 33 36 PM" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/003f9bb2-aa13-4c37-bec4-a8f3f712eb32">
 ## Table of Contents
 
 1. [Introduction](#1-introduction)
 2. [Getting Started](#2-getting-started)
 3. [Database Schema](#3-database-schema)
 4. [API Documentation](#4-api-documentation)
-
+5. [Unit Testing](#5-unit-testing)
 ---
 
 ## 1. Introduction
@@ -116,3 +116,13 @@ Manages operations related to movie rentals.
 - **URL**: `/v1/rentals/customers/{customerId}`
 - **Method**: `GET`
 - **Description**: Get all rentals for specfic Customer.
+
+
+## 5. Unit Testing
+
+- Unit testing is applied to the following layers: controller, service, and mappers.
+- ensures that all possible test scenarios are covered.
+- Test coverage is shown in the "test-coverage" section.
+ <img width="700" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/0a91790f-bfb0-4bf8-a574-658be7296ccd">
+
+ 
