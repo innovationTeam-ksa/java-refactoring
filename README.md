@@ -1,4 +1,3 @@
-<img width="446" alt="Screen Shot 2024-05-25 at 12 33 36 PM" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/003f9bb2-aa13-4c37-bec4-a8f3f712eb32">
 ## Table of Contents
 
 1. [Introduction](#1-introduction)
@@ -6,7 +5,7 @@
 3. [Database Schema](#3-database-schema)
 4. [API Documentation](#4-api-documentation)
 5. [Logging](#5-logging)
-6. [Unit Testing](#5-unit-testing)
+6. [Unit Testing](#6-unit-testing)
 
 ---
 
