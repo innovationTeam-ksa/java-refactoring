@@ -7,6 +7,7 @@
 5. [Logging](#5-logging)
 6. [Unit Testing](#6-unit-testing)
 7. [Test Coverage](#7-test-coverage)
+8. [Docker-multi-stage](#8-docker-multistage)
 ---
 
 ## 1. Introduction
@@ -148,3 +149,21 @@ Manages operations related to movie rentals.
 <img width="600" alt="coverage" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/f41cc5f8-cda6-4220-a863-76e6a54b5fb5">
 
 
+## 8. Docker Multistage
+Implemented a multi-stage Dockerfile to optimize the build process and reduce the final image size.
+
+- The first stage builds the application using Maven and OpenJDK 21.
+- The second stage creates a minimal runtime image with OpenJDK 21 and the built JAR file.
+
+### Build and Run
+
+To build the Docker image:
+
+```bash
+docker build -t innovationTask .
+```
+
+To Run the Docker image:
+```bash
+docker run -p 8080:8080 innovationTask
+```
