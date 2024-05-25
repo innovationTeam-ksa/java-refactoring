@@ -1,4 +1,4 @@
-
+<img width="446" alt="Screen Shot 2024-05-25 at 12 33 36 PM" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/003f9bb2-aa13-4c37-bec4-a8f3f712eb32">
 ## Table of Contents
 
 1. [Introduction](#1-introduction)
@@ -6,6 +6,7 @@
 3. [Database Schema](#3-database-schema)
 4. [API Documentation](#4-api-documentation)
 5. [Logging](#5-logging)
+6. [Unit Testing](#5-unit-testing)
 
 ---
 
@@ -42,7 +43,6 @@ To install and run Innovation Task:
 1. Clone the repository: `[git clone https://github.com/Aabdelmajeed/InnovationTask.git)`
 2. Build the project: `mvn clean install`
 3. Run the project: `mvn spring-boot:run`
-
 
 ## 3. Database Schema
 ### Why choosing Relational DB?
@@ -130,4 +130,13 @@ Manages operations related to movie rentals.
 <img width="200" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/787f8de7-da08-451c-b51f-0712546e54b9">
 
 *Example of logging output in the console and in the file `/logs/innovation-logs`.*
- 
+
+## 6. Unit Testing
+
+- Unit testing is applied to the following layers: controller, service, and mappers.
+- ensures that all possible test scenarios are covered.
+- Test coverage is shown in the "test-coverage" section.
+ <img width="700" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/0a91790f-bfb0-4bf8-a574-658be7296ccd">
+
+
+  

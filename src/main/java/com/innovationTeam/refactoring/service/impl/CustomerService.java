@@ -68,20 +68,22 @@ public class CustomerService implements CustomerInterface {
     public Mono<String> generateCustomerStatement(Long customerId) {
         return Mono.just(customerRepository.findById(customerId))
                 .flatMap(customer -> {
-                     return statementCalculationService.calculateStatement(customer.get().getRentals(), customer.get().getName())
+                    if (customer.isEmpty()) {
+                        return Mono.error(new CustomerNotFoundException(String.format("Customer with id %d not found", customerId)));
+                    }
+                    return statementCalculationService.calculateStatement(customer.get().getRentals(), customer.get().getName())
                             .map(statement -> {
-                                 String printedStatement = statementPrintingService.printStatement(statement);
+                                String printedStatement = statementPrintingService.printStatement(statement);
                                 logger.debug("Generated statement: {}", printedStatement);
                                 return printedStatement;
                             });
-                })
-                .switchIfEmpty(Mono.error(new CustomerNotFoundException(String.format("Customer with id %d not found", customerId))));
+                });
     }
 
     @Override
     public Mono<Customer> createCustomer(CustomerRequestDto customerRequestDto) {
-        logger.info("Creating new customer: {}", customerRequestDto.getName());
         validateCustomerRequest(customerRequestDto);
+        logger.info("Creating new customer: {}", customerRequestDto.getName());
 
         Customer customer = CustomerMapper.INSTANCE.mapToCustomer(customerRequestDto);
         return Mono.just(customerRepository.save(customer))

@@ -21,7 +21,7 @@ public class StatementCalculationService implements StatementCalculationInterfac
     private static final Logger logger = LoggerFactory.getLogger(StatementCalculationService.class);
 
     @Autowired
-    private  MovieRentalRepository movieRentalRepository;
+    private MovieRentalRepository movieRentalRepository;
 
     @Override
     public Mono<Statement> calculateStatement(List<MovieRental> rentalList, String customerName) {

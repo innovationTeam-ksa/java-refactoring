@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.innovationTeam.refactoring.utils.Constants.MOVIE_REQUEST_DTO_NULL_ERROR;
 import static com.innovationTeam.refactoring.utils.Constants.MovieConstants.MOVIE_ID_NOT_NULL_ERROR;
 
 @Service
@@ -27,10 +28,13 @@ public class MovieService implements MovieInterface {
     private static final Logger logger = LoggerFactory.getLogger(MovieService.class);
 
     @Autowired
-    private  MovieRepository movieRepository;
+    private MovieRepository movieRepository;
 
     @Override
     public Mono<Movie> saveMovie(MovieRequestDto movieRequest) {
+        if (movieRequest == null)
+            return Mono.error(new IllegalArgumentException(MOVIE_REQUEST_DTO_NULL_ERROR));
+
         Movie movie = MovieMapper.INSTANCE.mapToMovie(movieRequest);
         return Mono.fromCallable(() -> movieRepository.save(movie))
                 .doOnSuccess(savedMovie -> logger.info("Saved movie: {}", savedMovie));
