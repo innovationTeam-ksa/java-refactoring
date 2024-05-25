@@ -5,7 +5,9 @@
 2. [Getting Started](#2-getting-started)
 3. [Database Schema](#3-database-schema)
 4. [API Documentation](#4-api-documentation)
-5. [Unit Testing](#5-unit-testing)
+5. [Logging](#5-logging)
+6. [Unit Testing](#5-unit-testing)
+
 ---
 
 ## 1. Introduction
@@ -42,13 +44,11 @@ To install and run Innovation Task:
 2. Build the project: `mvn clean install`
 3. Run the project: `mvn spring-boot:run`
 
-
 ## 3. Database Schema
 ### Why choosing Relational DB?
 - as our Data is structured also to maintain data integrity so each record in rentalMovie table have a valid records in both customer and movie table.This ensures that each rental transaction is accurately linked to existing customer and movie data,
-<img width="700" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/c642addc-901e-4ed9-a966-177b234418b4">
-
-
+<img width="700" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/11d4ba64-99f9-44f3-a3e7-176e35ef71ad">
+ 
 ## 4. Api Documentation
 
 ## CustomerController
@@ -72,6 +72,10 @@ Manages operations related to customers.
   }
 
 
+#### Retrieve Customer Statement
+- **URL** : `/v1/customer/{customerId}/statement`
+- **Method** : `GET`
+- **Description** : `Retrives the rental statement for a specfic customer`
 
 
 
@@ -117,12 +121,22 @@ Manages operations related to movie rentals.
 - **Method**: `GET`
 - **Description**: Get all rentals for specfic Customer.
 
+## 5. Logging
 
-## 5. Unit Testing
+### Logging Integeration
+- This project utilizes Logback for logging.
+- I ensured the logging solution is clear and readable.
+<img width="600" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/d3b9ae85-4b10-48ae-93f1-65c66c26673b">
+<img width="200" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/787f8de7-da08-451c-b51f-0712546e54b9">
+
+*Example of logging output in the console and in the file `/logs/innovation-logs`.*
+
+## 6. Unit Testing
 
 - Unit testing is applied to the following layers: controller, service, and mappers.
 - ensures that all possible test scenarios are covered.
 - Test coverage is shown in the "test-coverage" section.
  <img width="700" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/0a91790f-bfb0-4bf8-a574-658be7296ccd">
 
- 
+
+  
