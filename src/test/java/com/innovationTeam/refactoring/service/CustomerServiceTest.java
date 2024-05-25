@@ -65,7 +65,7 @@ public class CustomerServiceTest {
         customer.setRentals(Collections.singletonList(rental));
         statement = new Statement();
         statement.setCustomerName("Customer name");
-         statement.setTotalAmount(10.0);
+        statement.setTotalAmount(10.0);
     }
 
     @Test

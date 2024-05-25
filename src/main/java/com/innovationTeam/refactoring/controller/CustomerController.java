@@ -41,8 +41,7 @@ public class CustomerController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public Mono<ResponseEntity<ApiResponseModel<List<CustomerResponse>>>> getAllCustomers() {
-        return customerService.getAllCustomers()
-                .collectList()
+        return customerService.getAllCustomers().collectList()
                 .map(customerResponses -> ResponseEntity.ok(
                         new ApiResponseBuilder<List<CustomerResponse>>()
                                 .success()
