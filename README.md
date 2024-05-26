@@ -8,7 +8,9 @@
 6. [Unit Testing](#6-unit-testing)
 7. [Test Coverage](#7-test-coverage)
 8. [Docker-multi-stage](#8-docker-multistage)
----
+9. [Helm Chart](#9-helm-chart)
+10. [Scaling Support](#10-scaling-support)
+
 
 ## 1. Introduction
 
@@ -136,7 +138,9 @@ Manages operations related to movie rentals.
 - Unit testing is applied to the following layers: controller, service, and mappers.
 - ensures that all possible test scenarios are covered.
 - Test coverage is shown in the "test-coverage" section.
- <img width="700" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/0a91790f-bfb0-4bf8-a574-658be7296ccd">
+
+<img width="600" alt="coverage" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/f41cc5f8-cda6-4220-a863-76e6a54b5fb5">
+
 
 ## 7. Test Coverage
 - Using JaCoCo to measure the test coverage of our codebase.
@@ -146,8 +150,7 @@ Manages operations related to movie rentals.
 
 <img width="600" alt="Screen Shot 2024-05-25 at 9 19 51 PM" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/c9010559-a0de-40b0-ad5d-219413a6b519">
 
-<img width="600" alt="coverage" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/f41cc5f8-cda6-4220-a863-76e6a54b5fb5">
-
+<img width="400" alt="Screen Shot 2024-05-26 at 6 57 42 PM" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/b0fe61fa-3b49-41bb-a4c7-caff29b20b45">
 
 ## 8. Docker Multistage
 Implemented a multi-stage Dockerfile to optimize the build process and reduce the final image size.
@@ -167,3 +170,43 @@ To Run the Docker image:
 ```bash
 docker run -p 8080:8080 innovationTask
 ```
+
+## 9. Helm Chart
+- Project includes a Helm chart with multiple profiles: MySQL and H2.
+- The Docker image for this project has been built and pushed to a registry hub. You can pull the image using below command
+
+   ```sh
+     docker pull abdelmagied820/innovation-task ```
+   
+<img width="600" alt="Screen Shot 2024-05-26 at 6 12 03 PM" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/4c835ac2-86ac-49a1-b41a-ba2ecae3bd1f">
+*Image hosted on registry hub.*
+
+<img width="500" alt="Screen Shot 2024-05-26 at 6 29 08 PM" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/f3efe95e-c90b-4564-a205-538cb03430a1">
+*Forward port to 9099 on your local machine.*
+
+
+
+### Install Helm locally
+#### Prerequisites
+   - Ensure you have a local Kubernetes cluster running.
+#### Commands
+
+- **Install with H2 Profile**
+  ```sh
+  helm install innovation-task-h2 ./innovation-task-helm —values ./innovation-task-helm/profiles/h2-values.yaml
+ 
+- **Install with Mysql Profile**
+ ```sh
+  helm install innovation-task-mysql ./innovation-task-helm —values ./innovation-task-helm/profiles/mysql-values.yaml
+ ```
+- **After that run the below command to be able to access project in port 8080 in your machine**
+   ```sh
+   kubectl --namespace default port-forward innovation-task-h2-innovation-task-helm-6c666577b-2f4br 8080:8080
+   ```
+
+## 10. Scaling Support
+- The project is designed to be horizontally scalable. You can adjust the `replicaCount` in the `values.yaml` file within the Helm chart to scale the number of replicas and manage load effectively.
+
+<img width="500" alt="Screen Shot 2024-05-26 at 6 31 14 PM" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/514157a7-7d3c-482d-ab55-79b4cdbbb0ed">
+*Scaling support*
+

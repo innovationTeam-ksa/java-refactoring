@@ -1,0 +1,10 @@
+env:
+  datasource:
+    url: "jdbc:h2:mem:movies"
+    driverClassName: "org.h2.Driver"
+    databasePlatform: "org.hibernate.dialect.H2Dialect"
+    deferDatasourceInitialization: "true"
+
+spring:
+  profiles:
+    active: h2
