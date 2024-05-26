@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: abdelmagied820/mego-task
+  repository: abdelmagied820/innovation-task
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest
