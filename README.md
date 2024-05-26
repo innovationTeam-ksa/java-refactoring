@@ -7,8 +7,9 @@
 5. [Logging](#5-logging)
 6. [Unit Testing](#6-unit-testing)
 7. [Test Coverage](#7-test-coverage)
-8. [Helm Chart](#8-helm-chart)
-9. [Scaling Support](#9-scaling-support)
+8. [Docker-multi-stage](#8-docker-multistage)
+9. [Helm Chart](#9-helm-chart)
+10. [Scaling Support](#10-scaling-support)
 
 
 ## 1. Introduction
@@ -151,9 +152,26 @@ Manages operations related to movie rentals.
 
 <img width="400" alt="Screen Shot 2024-05-26 at 6 57 42 PM" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/b0fe61fa-3b49-41bb-a4c7-caff29b20b45">
 
+## 8. Docker Multistage
+Implemented a multi-stage Dockerfile to optimize the build process and reduce the final image size.
 
+- The first stage builds the application using Maven and OpenJDK 21.
+- The second stage creates a minimal runtime image with OpenJDK 21 and the built JAR file.
 
-## 8. Helm Chart
+### Build and Run
+
+To build the Docker image:
+
+```bash
+docker build -t innovationTask .
+```
+
+To Run the Docker image:
+```bash
+docker run -p 8080:8080 innovationTask
+```
+
+## 9. Helm Chart
 - Project includes a Helm chart with multiple profiles: MySQL and H2.
 - The Docker image for this project has been built and pushed to a registry hub. You can pull the image using below command
 
@@ -186,8 +204,9 @@ Manages operations related to movie rentals.
    kubectl --namespace default port-forward innovation-task-h2-innovation-task-helm-6c666577b-2f4br 8080:8080
    ```
 
-## 9. Scaling Support
+## 10. Scaling Support
 - The project is designed to be horizontally scalable. You can adjust the `replicaCount` in the `values.yaml` file within the Helm chart to scale the number of replicas and manage load effectively.
 
 <img width="500" alt="Screen Shot 2024-05-26 at 6 31 14 PM" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/514157a7-7d3c-482d-ab55-79b4cdbbb0ed">
 *Scaling support*
+
