@@ -1,0 +1,3 @@
+springProfiles: mysql
+
+clientName: mysqlClient

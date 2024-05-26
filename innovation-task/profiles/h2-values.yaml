@@ -1,0 +1,3 @@
+springProfiles: h2
+
+clientName: h2Client

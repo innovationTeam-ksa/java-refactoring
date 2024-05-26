@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,15 @@ import static com.innovationTeam.refactoring.utils.Constants.ERROR_OCCURED_MSG;
 @RequestMapping("/v1/customers")
 @Slf4j
 public class CustomerController {
+
+    @Value("${CLIENT_NAME}")
+    private String clientId;
+
+    @GetMapping(path = "/test/helm")
+    public ResponseEntity<String> getAllsCustomers() {
+        return ResponseEntity.status(HttpStatus.CREATED).body(clientId);
+    }
+
     @Autowired
     private CustomerService customerService;
     private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
