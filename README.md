@@ -179,11 +179,12 @@ docker run -p 8080:8080 innovationTask
      docker pull abdelmagied820/innovation-task ```
    
 <img width="600" alt="Screen Shot 2024-05-26 at 6 12 03 PM" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/4c835ac2-86ac-49a1-b41a-ba2ecae3bd1f">
+
 *Image hosted on registry hub.*
 
 <img width="500" alt="Screen Shot 2024-05-26 at 6 29 08 PM" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/f3efe95e-c90b-4564-a205-538cb03430a1">
-*Forward port to 9099 on your local machine.*
 
+*Forward port to 9099 on your local machine.*
 
 
 ### Install Helm locally
@@ -202,11 +203,11 @@ docker run -p 8080:8080 innovationTask
 - **After that run the below command to be able to access project in port 8080 in your machine**
    ```sh
    kubectl --namespace default port-forward innovation-task-h2-innovation-task-helm-6c666577b-2f4br 8080:8080
-   ```
+   
 
 ## 10. Scaling Support
 - The project is designed to be horizontally scalable. You can adjust the `replicaCount` in the `values.yaml` file within the Helm chart to scale the number of replicas and manage load effectively.
 
 <img width="500" alt="Screen Shot 2024-05-26 at 6 31 14 PM" src="https://github.com/Aabdelmajeed/InnovationTask/assets/88937645/514157a7-7d3c-482d-ab55-79b4cdbbb0ed">
-*Scaling support*
 
+*Scaling support.*
