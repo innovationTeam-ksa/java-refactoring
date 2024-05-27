@@ -1,0 +1,11 @@
+env:
+  datasource:
+    url: "jdbc:mysql://localhost:3306/movies"
+    driverClassName: "com.mysql.cj.jdbc.Driver"
+    databasePlatform: "org.hibernate.dialect.MySQLDialect"
+    deferDatasourceInitialization: "true"
+
+
+spring:
+  profiles:
+    active: mysql
