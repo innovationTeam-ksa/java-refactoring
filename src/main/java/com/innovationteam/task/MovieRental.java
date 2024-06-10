@@ -1,3 +1,5 @@
+package com.innovationteam.task;
+
 public class MovieRental {
     private String movieId;
     private int days;

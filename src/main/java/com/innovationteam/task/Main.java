@@ -1,3 +1,5 @@
+package com.innovationteam.task;
+
 import java.util.Arrays;
 
 public class Main {

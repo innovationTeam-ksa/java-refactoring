@@ -1,3 +1,5 @@
+package com.innovationteam.task;
+
 public class Movie {
     private String title;
     private String code;
