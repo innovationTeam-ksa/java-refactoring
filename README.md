@@ -90,7 +90,43 @@ We use a multi-stage Docker build to optimize the build process and reduce the f
 
 To speed up the build process, we cache the Gradle dependencies by copying the Gradle wrapper and build files first and running the `./gradlew dependencies` command. This layer is cached and reused if the dependencies do not change, significantly reducing build times for subsequent builds.
 
+## Load Testing with JMeter
+
+### Overview
+
+A JMeter `.jmx` file is provided to simulate a load of 10 million requests per hour. This helps in understanding the performance and scalability of the application under high load conditions.
+
+### Prerequisites
+
+- Apache JMeter installed
+- Ensure the application is running locally on port 8080
+
+### Running the JMeter Test
+
+1. **Navigate to the directory containing the `.jmx` file**:
+
+    ```sh
+    cd src/test/resources/
+    ```
+
+2. **Execute the JMeter test plan from the command line**:
+
+    ```sh
+    jmeter -n -t load_test.jmx -l results.jtl
+    ```
+
+   - `-n`: Non-GUI mode
+   - `-t`: The path to the JMeter test plan file (`.jmx` file)
+   - `-l`: The path to the results file (`.jtl` file)
+
+### Viewing Results
+
+After running the test, you can view the results in the `results.jtl` file or load the results into JMeter GUI for a more detailed analysis.
+
+```sh
+jmeter -g results.jtl -o /path/to/output/report
+
 ## Contact
 
-For any questions or issues, please contact [your-email@example.com].
+For any questions or issues, please contact [hatem.mohtaha@gmail.com].
 
