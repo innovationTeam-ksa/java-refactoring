@@ -5,11 +5,16 @@ import com.innovationteam.task.models.Movie;
 import com.innovationteam.task.models.MovieRental;
 import com.innovationteam.task.repos.MovieRepository;
 import com.innovationteam.task.services.RentalStatementGenerator;
+import com.innovationteam.task.services.rentalstrategies.ChildrenMovieRentalStrategy;
+import com.innovationteam.task.services.rentalstrategies.NewReleaseMovieRentalStrategy;
+import com.innovationteam.task.services.rentalstrategies.RegularMovieRentalStrategy;
+import com.innovationteam.task.services.rentalstrategies.RentalStatementStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.ApplicationContext;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -22,6 +27,8 @@ public class RentalStatementGeneratorTest {
 
     @Mock
     private MovieRepository movieRepository;
+    @Mock
+    private ApplicationContext applicationContext;
 
     @InjectMocks
     private RentalStatementGenerator rentalStatementGenerator;
@@ -36,6 +43,7 @@ public class RentalStatementGeneratorTest {
         Movie movie1 = new Movie("F001", "You've Got Mail", "regular");
         Movie movie2 = new Movie("F002", "Matrix", "regular");
 
+        when(applicationContext.getBean(RentalStatementStrategy.class, "regular")).thenReturn(new RegularMovieRentalStrategy());
         when(movieRepository.findById("F001")).thenReturn(Mono.just(movie1));
         when(movieRepository.findById("F002")).thenReturn(Mono.just(movie2));
 
@@ -74,6 +82,10 @@ public class RentalStatementGeneratorTest {
         Movie movie2 = new Movie("F002", "Matrix", "regular");
         Movie movie3 = new Movie("F003", "Cars", "children");
         Movie movie4 = new Movie("F004", "Fast & Furious X", "new");
+
+        when(applicationContext.getBean(RentalStatementStrategy.class, "regular")).thenReturn(new RegularMovieRentalStrategy());
+        when(applicationContext.getBean(RentalStatementStrategy.class, "children")).thenReturn(new ChildrenMovieRentalStrategy());
+        when(applicationContext.getBean(RentalStatementStrategy.class, "new")).thenReturn(new NewReleaseMovieRentalStrategy());
 
         when(movieRepository.findById("F001")).thenReturn(Mono.just(movie1));
         when(movieRepository.findById("F002")).thenReturn(Mono.just(movie2));

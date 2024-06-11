@@ -3,6 +3,7 @@ package com.innovationteam.task;
 import com.innovationteam.task.services.RentalService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/api/v1/rentals")
 @RequiredArgsConstructor
+@Slf4j
 public class RentalStatementBoundary {
 
     private final RentalService rentalService;
@@ -23,6 +25,7 @@ public class RentalStatementBoundary {
     @ApiResponse(responseCode = "401", description = "Unauthorized access")
     @ApiResponse(responseCode = "500", description = "Application is not available at the moment")
     public Mono<String> getRentalInfo(@PathVariable String customerId) {
+        log.info("Generating a report for {}", customerId);
         return rentalService.generateCustomerStatement(customerId);
     }
 

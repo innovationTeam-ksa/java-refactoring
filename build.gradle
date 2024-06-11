@@ -59,3 +59,10 @@ jacocoTestReport {
         html.required = true
     }
 }
+
+tasks.register('unpack', Copy) {
+    dependsOn bootJar
+    from(zipTree(tasks.bootJar.outputs.files.singleFile as Object)) into('build/dependency')
+}
+
+assemble.dependsOn(unpack)
