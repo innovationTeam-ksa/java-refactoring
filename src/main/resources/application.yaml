@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: movie-rental
+  data:
+    mongodb:
+      auto-index-creation: true
+      host: localhost
+      port: 27018
+      database: movierental
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    com.innovationteam.task: DEBUG
+server:
+  port: 8080
+

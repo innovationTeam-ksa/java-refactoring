@@ -1,0 +1,22 @@
+replicaCount: 1
+
+image:
+  repository: movie-rental-app
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+mongodb:
+  host: mongodb-mongodb
+  port: 27017
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
